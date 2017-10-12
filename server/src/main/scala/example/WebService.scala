@@ -10,7 +10,7 @@ class WebService() extends Directives {
     pathSingleSlash {
       get {
         complete {
-          HttpEntity(ContentTypes.`text/html(UTF-8)`, Pages.index(SharedMessages.itWorks))
+          HttpEntity(ContentTypes.`text/html(UTF-8)`, Pages.index())
         }
       }
     } ~
