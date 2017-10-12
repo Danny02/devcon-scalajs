@@ -19,24 +19,25 @@ object ScalaJSExample {
   def main(args: Array[String]): Unit = {
     refreshTalks.runAsync
 
-    val newTalkName = input().render
-    val speakerName = input().render
+    val newTalkName = input(cls := "form-control").render
+    val speakerName = input(cls := "form-control").render
 
-    val addTalkButton = button(onclick := { () =>
-      val newTalk =
-        Talk(None, newTalkName.value, Speaker(speakerName.value), Instant.now, Instant.now)
+    val addTalkButton = button(
+      cls := "btn btn-primary",
+      onclick := { () =>
+        val newTalk =
+          Talk(None, newTalkName.value, Speaker(speakerName.value), Instant.now, Instant.now)
 
-      for {
-        _ <- AgendaApi.createTalkRequest(newTalk)
-        _ <- refreshTalks
-      } {}
-    })("add new Talk")
+        for {
+          _ <- AgendaApi.createTalkRequest(newTalk)
+          _ <- refreshTalks
+        } {}
+      }
+    )("add new Talk")
 
     val addTalkSection = section(
-      label("talk name: "),
-      newTalkName,
-      label("speaker name: "),
-      speakerName,
+      div(cls := "form-group")(label("talk name: "), newTalkName),
+      div(cls := "form-group")(label("speaker name: "), speakerName),
       addTalkButton
     )
 

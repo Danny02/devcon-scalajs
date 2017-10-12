@@ -17,11 +17,13 @@ object Pages {
   def index() = {
     val dummyTalk: Frag = Talk(None, "dummy", Speaker("John Do"), Instant.now, Instant.now)
 
+    val con = *.cls := "container"
+
     template("Akka HTTP with Scala.js")(
-      h1("DevCon 2017"),
-      h2("Agenda"),
-      tags2.main(*.id := mainId)(
-        tags2.section(*.id := talkListId)(Seq(dummyTalk, dummyTalk, dummyTalk).asUnorderedList)
+      header(con)(h1("DevCon 2017")),
+      tags2.main(*.id := mainId, con)(
+        h2("Agenda"),
+        tags2.section(*.id := talkListId, con)(Seq.fill(3)(dummyTalk).asUnorderedList)
       )
     )
   }

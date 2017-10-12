@@ -23,19 +23,28 @@ object AgendaApi {
   private val agendaApiUrl = "http://devconagenda-dev.us-east-2.elasticbeanstalk.com/talks"
 
   val talksRequest: Task[Seq[Talk]] = {
+    def parseResponse(response: String): Decoder.Result[Seq[Talk]] = {
+      val json   = parse(response).getOrElse(Json.Null)
+      val cursor = json.hcursor
+      cursor.downField("_embedded").get[Seq[Talk]]("talks")
+    }
+
     for {
       f     <- Task.deferFuture(Ajax.get(agendaApiUrl))
-      talks <- Task.fromTry(decode[Seq[Talk]](f.responseText).toTry)
+      talks <- Task.fromTry(parseResponse(f.responseText).toTry)
     } yield talks
   }
 
   val createTalkRequest: Talk => Task[_] = { talk =>
     val printer = Printer.noSpaces.copy(dropNullKeys = true)
-    Task.deferFuture(Ajax.post(agendaApiUrl, printer.pretty(talk.asJson)))
+    Task.deferFuture(
+      Ajax.post(agendaApiUrl,
+                printer.pretty(talk.asJson),
+                headers = Map("Content-Type" -> "application/json")))
   }
 
-//  def main(args: Array[String]) = {
-//    val printer = Printer.noSpaces.copy(dropNullKeys = true)
-//    println(printer.pretty(Talk(None, "test", Speaker("asd"), Instant.now, Instant.now).asJson))
-//  }
+  //  def main(args: Array[String]) = {
+  //    val printer = Printer.noSpaces.copy(dropNullKeys = true)
+  //    println(printer.pretty(Talk(None, "test", Speaker("asd"), Instant.now, Instant.now).asJson))
+  //  }
 }
