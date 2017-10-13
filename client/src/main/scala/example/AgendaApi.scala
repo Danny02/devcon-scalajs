@@ -36,11 +36,17 @@ object AgendaApi {
   }
 
   val createTalkRequest: Talk => Task[_] = { talk =>
+    require(talk.id.isEmpty)
     val printer = Printer.noSpaces.copy(dropNullKeys = true)
     Task.deferFuture(
       Ajax.post(agendaApiUrl,
                 printer.pretty(talk.asJson),
                 headers = Map("Content-Type" -> "application/json")))
+  }
+
+  val deleteTalkRequest: Talk => Task[_] = { talk =>
+    require(talk.id.isDefined)
+    Task.deferFuture(Ajax.delete(s"$agendaApiUrl/${talk.id.get}"))
   }
 
   //  def main(args: Array[String]) = {

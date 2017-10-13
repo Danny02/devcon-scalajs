@@ -18,7 +18,8 @@ class Components[Builder, Output <: FragT, FragT](bundle: Bundle[Builder, Output
         img(cls := "card-img-top", src := "http://via.placeholder.com/300x200"),
         div(cls := "card-body")(
           h4(cls := "card-title")(t.name),
-          p(cls := "card-text")(s"by ${t.speaker.name} on ${t.startTime}")
+          p(cls := "card-text")(s"by ${t.speaker.name} on ${t.startTime}"),
+          a(cls := "btn btn-danger")("Delete")
         )
       )
     }

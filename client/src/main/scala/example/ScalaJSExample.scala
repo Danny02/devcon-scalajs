@@ -50,7 +50,20 @@ object ScalaJSExample {
 
     AgendaApi.talksRequest.map { talks =>
       taskList.innerHTML = ""
-      taskList.appendChild(toFrag(talks).render)
+      val talkNodes = for (t <- talks) yield {
+        div(cls := "card", scalatags.JsDom.all.style := "width: 20rem; margin: 1rem")(
+          img(cls := "card-img-top", src := "http://via.placeholder.com/300x200"),
+          div(cls := "card-body")(
+            h4(cls := "card-title")(t.name),
+            p(cls := "card-text")(s"by ${t.speaker.name} on ${t.startTime}"),
+            a(cls := "btn btn-danger", onclick := { () =>
+              AgendaApi.deleteTalkRequest(t).runAsync
+              refreshTalks.runAsync
+            })("Delete")
+          )
+        )
+      }
+      taskList.appendChild(scalatags.JsDom.all.SeqFrag(talkNodes).render)
     }
   }
 
