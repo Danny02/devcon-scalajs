@@ -2,9 +2,9 @@ language: scala
 
 cache:
   directories:
-  - $HOME/.ivy2
-  - $HOME/.sbt
-  - $HOME/.m2
+    - $HOME/.ivy2
+    - $HOME/.sbt
+    - $HOME/.m2
 
 before_deploy:
   - sbt assembly
