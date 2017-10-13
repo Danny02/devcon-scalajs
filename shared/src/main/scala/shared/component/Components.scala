@@ -13,17 +13,23 @@ class Components[Builder, Output <: FragT, FragT](bundle: Bundle[Builder, Output
   }
 
   implicit val talkRenderer = new Renderer[Talk] {
-    override def render(t: Talk) = s"${t.speaker.name}: ${t.name} (${t.startTime})"
+    override def render(t: Talk): Frag = {
+      div(cls := "card", style := "width: 20rem; margin: 1rem")(
+        img(cls := "card-img-top", src := "http://via.placeholder.com/300x200"),
+        div(cls := "card-body")(
+          h4(cls := "card-title")(t.name),
+          p(cls := "card-text")(s"by ${t.speaker.name} on ${t.startTime}")
+        )
+      )
+    }
+  }
+
+  implicit val talksRenderer = new Renderer[Seq[Talk]] {
+    override def render(t: Seq[Talk]): Frag = seqFragable(t)
   }
 
   implicit def toFrag[A: Renderer](a: A): Frag = implicitly[Renderer[A]].render(a)
 
   implicit def seqFragable[A: Renderer](s: Seq[A]): Seq[Frag] = s.map(a => a: Frag)
 
-  implicit class SeqOps(s: Seq[Frag]) {
-    def asUnorderedList: Frag = ul(s.map(li(_)))
-  }
-  implicit class SeqOps2[A: Renderer](s: Seq[A]) {
-    def asUnorderedList: Frag = seqFragable(s).asUnorderedList
-  }
 }

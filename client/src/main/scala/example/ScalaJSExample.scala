@@ -50,7 +50,7 @@ object ScalaJSExample {
 
     AgendaApi.talksRequest.map { talks =>
       taskList.innerHTML = ""
-      taskList.appendChild(talks.asUnorderedList.render)
+      taskList.appendChild(toFrag(talks).render)
     }
   }
 

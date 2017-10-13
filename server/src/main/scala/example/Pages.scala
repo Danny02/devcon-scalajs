@@ -11,7 +11,6 @@ import scalatags.Text._
 object Pages {
 
   object TextComponents extends Components(scalatags.Text)
-
   import TextComponents._
 
   def index() = {
@@ -23,7 +22,8 @@ object Pages {
       header(con)(h1("DevCon 2017")),
       tags2.main(*.id := mainId, con)(
         h2("Agenda"),
-        tags2.section(*.id := talkListId, con)(Seq.fill(3)(dummyTalk).asUnorderedList)
+        tags2.section(*.id := talkListId, *.cls := "d-flex", *.style := "flex-flow: row wrap")(
+          Seq.fill(3)(dummyTalk))
       )
     )
   }
