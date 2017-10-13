@@ -1,1 +1,24 @@
 language: scala
+
+cache:
+  directories:
+  - $HOME/.ivy2
+  - $HOME/.sbt
+  - $HOME/.m2
+
+before_deploy:
+  - sbt assembly
+  - export ASSEMBLY_JAR=$(ls server/target/scala-*/server-assembly*.jar)
+  - echo "deploying $ASSEMBLY_JAR"
+
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: AKIAIYGBUACIBGDJLQ4Q
+  secret_access_key:
+    secure: "PGXveYf/ZQOLIGz6g/vvBng28ZgpEA4Ql/VtgLeC3gLeOQdJIXpNRINhLgWDF5XMcNHYaUGzr5/q44ZmE/wCdBTfVF8/T3VKQZoaohKRMok6OLKja/vAu3qoD1BIWn4K0tYtnVXJVWvG9SsbYMVgRzCmACDfu7mB+53nPHYgyAHgFdiHiR2/MXLfHQwF4zD4QXvNCFPIi+SowuZ/WJH7t8oy/LxV7/9ALsFe6fonc7Q85/1OAddWe/5Ztj3xxvW8cbOi3f9akR16tGQj4ePt6DKkY+S/PEb9hHvwtzAZhMqfVMnIam8yf5wAxlHkAcGYAyezqe3bdsN5g53dFymhXNtH9BiNRz+iOShq6vXEvCdLfSYonBB5bOkt0hYCeYoL4+NyuOsxxQfmrszwO2TVWGQnL7hiD4IO5eR4FqFS7sHbUY8BRtYChDw+vOZSOHJtnWI0crpHY/fuEgvYieh2DvkvLCPoEooCwb67oP544ouAUgqLGWhNEkwv+i9fZy5LWSrOa7A8gHW19bppBPoakhRLHZHHCSwIECUc3PqXEykrr6TCAWyX2ajLt06Sf8nE8mtFu7EWuWApNI10Gw06BRbtiXnEqOfl8xKmkt4XLyePBplmtVeThP8npP5lgZiR/3psXmrZwPJE5/VFjZDo9/XfT/rtN8pkZM/COsny9x8="
+  region: "us-east-2"
+  app: "devcon-scalajs"
+  env: "devconScalajs-env"
+  bucket_name: "devcon-scalajs-bucket"
+  skip_cleanup: true
+  zip_file: "${ASSEMBLY_JAR}"
